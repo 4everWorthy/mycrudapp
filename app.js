@@ -11,8 +11,7 @@ let items = []; // Initialize an in-memory array to store data
 app.post('/items', (req, res) => {
     const item = {
         id: items.length + 1, // Unique ID: items.length gives the number of items, +1 makes it unique
-        name: req.body.name,
-        description: req.body.description
+        ...req.body // Use the spread operator to include all properties from the request body
     };
     items.push(item); // Add the new item to the array
     res.status(201).json(item); // Send the new item with a 201 status code indicating resource creation
@@ -39,8 +38,7 @@ app.put('/items/:id', (req, res) => {
     if (!item) { // If item is not found (item is falsy)
         res.status(404).send('Item not found'); // Send a 404 status code with 'Item not found' message
     } else { // If item is found
-        item.name = req.body.name || item.name; // Update the name if provided, otherwise keep the current name
-        item.description = req.body.description || item.description; // Update the description if provided, otherwise keep the current description
+        Object.assign(item, req.body); // Use Object.assign to update the item with new values from req.body
         res.status(200).json(item); // Send the updated item with a 200 status code indicating success
     }
 });
